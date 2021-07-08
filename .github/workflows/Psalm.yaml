@@ -17,5 +17,8 @@ jobs:
           extensions: zip
           tools: vimeo/psalm
 
+      - name: Install dependencies
+        run: composer install --prefer-dist
+
       - name: Run Psalm
         run: psalm --show-info=true
