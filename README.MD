@@ -39,11 +39,14 @@ You'll only be prompted one question regarding which file you wan't import into 
     Note: This command is simply starting the Docker Image we created in the previous step and binding the current directory as a volume in Docker for the script to be able to write error logs to log.txt
     The --rm parameter is a mere convenience, this deletes the container after the execution.
 
+## Logging
+Errors are automatically logged to `log.txt`
+
 ## Database structure
 ![UML](https://i.imgur.com/ybOpylH.png)
 
 The original dataset has been broken down in several relationships in order to maintain atomicity.
-In the future, complex geometric checks can be easily implemented, like for example, checking if given `fair_address` coordinates are withing the boundaries of `district` or `census_area` geometries.
+In the future, complex geometric checks can be easily implemented, like for example, checking if given `fair_address` coordinates are within the boundaries of `district` or `census_area` geometries.
 The migrations for the database are on the server-side counterpart of this project.
 
 The database structure also leverages the PostgreSQL PostGIS extension, allowing easy geo data analysis.
