@@ -16,3 +16,6 @@ jobs:
           php-version: '8.0'
           extensions: zip
           tools: vimeo/psalm
+
+      - name: Run Psalm
+        run: psalm --show-info=true
