@@ -2,7 +2,7 @@
     "name": "nickstarlight/feira-livre-etl",
     "description": "Provides a CLI interface for extracting and importing Sao Paulo's Feira Livre data into a relational database.",
     "type": "project",
-    "license": "CC BY-NC 3.0",
+    "license": "proprietary",
     "autoload": {
         "psr-4": {
             "UnicoETL\\": "src/"
@@ -22,6 +22,7 @@
         "symfony/dotenv": "^5.3"
     },
     "require-dev": {
-        "vimeo/psalm": "^4.8"
+        "vimeo/psalm": "^4.8",
+        "nunomaduro/phpinsights": "^2.0"
     }
 }

@@ -22,15 +22,14 @@ final class PG
 {
     /**
      * Holds the PDO connection object.
-     * 
-     * @var PDO
      */
-    protected PDO $connection;
+    private PDO $connection;
 
-    /** 
+    /**
      * Initializes the PostgreSQL PDO connection.
-     * 
+     *
      * @throws Exception|PDOException
+     *
      * @return PDO
      */
     public function __construct()
@@ -39,26 +38,31 @@ final class PG
         $pgDb = getenv('PG_DB');
         $pgUser = getenv('PG_USER');
         $pgPassword = getenv('PG_PASSWORD');
-        $dsn = "pgsql:host=$pgHost;dbname=$pgDb";
+        $dsn = "pgsql:host=${pgHost};dbname=${pgDb}";
 
-        /** Just to be safe, you never know */
-        if ($pgHost === false || $pgDb === false || $pgUser === false || $pgPassword === false) {
+        if (
+            $pgHost === false ||
+            $pgDb === false ||
+            $pgUser === false ||
+            $pgPassword === false
+        ) {
             throw new Exception('Unable to find database configuration in the environment, check your .env file');
         }
 
         try {
             $this->connection = new PDO($dsn, $pgUser, $pgPassword);
-            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->connection->setAttribute(
+                PDO::ATTR_ERRMODE,
+                PDO::ERRMODE_EXCEPTION
+            );
         } catch (PDOException $e) {
-            Logger::Error($e);
+            Logger::error($e);
             throw new Exception('Unable to connect to the database, please check the log file.');
         }
     }
 
-    /** 
+    /**
      * Returns the context PDO instance.
-     * 
-     * @return PDO
      */
     public function getDB(): PDO
     {

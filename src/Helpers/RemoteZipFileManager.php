@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace UnicoETL\Helpers;
 
-use GuzzleHttp\Client as GuzzleHttpClient;
 use Exception;
+use GuzzleHttp\Client as GuzzleHttpClient;
 use ZipArchive;
 
 /**
  * Class RemoteZipFileManager
- * Implements an expressive interface for downloading and working with remote zip files.
+ * Implements an expressive interface for downloading
+ * and working with remote zip files.
  *
  * @package UnicoETL
  * @author Nick Moraes <contato@nickgomes.dev>
@@ -23,8 +24,6 @@ final class RemoteZipFileManager
     /**
      * Used as sub-directory inside the temporary directory
      * for debugging and isolation purposes.
-     * 
-     * @var string
      */
     private const APP_DIR_NAME = 'UnicoETL';
 
@@ -32,8 +31,6 @@ final class RemoteZipFileManager
      * Defines the working directory for downloading and manipulating files.
      * This should inside the temporary directory on the host OS.
      * Since this is different for each OS, we set it during in the constructor.
-     * 
-     * @var string
      */
     private string $workDir = '';
 
@@ -41,17 +38,15 @@ final class RemoteZipFileManager
      * A unique generated file name with the full absolute path.
      * This will be used as our 'file pointer' to access
      * and mutate the file.
-     * 
-     * @var string
      */
     private string $filePointer = '';
 
     /**
      * Initializes the file manager interface.
-     * 
+     *
      * @return void
      */
-    public final function __construct()
+    public function __construct()
     {
         $this->workDir = sys_get_temp_dir() . '/' . self::APP_DIR_NAME;
         $this->createDir(dirPath: $this->workDir);
@@ -59,29 +54,14 @@ final class RemoteZipFileManager
     }
 
     /**
-     * Create a directory if it doesn't exist.
-     * 
-     * @param string $dirPath The absolute path to the directory.
-     *
-     * @return void
-     */
-    private function createDir(string $dirPath): void
-    {
-        if (!is_dir($dirPath)) {
-            mkdir($dirPath, 0777);
-        }
-    }
-
-    /**
      * Download a zip file from given URL.
-     * 
+     *
      * @param string $url The URL containing a valid zip file to be downloaded.
-     * @param array $headers A key-value pair array containing headers to be sent with the request for download.
-     * 
+     * @param array<string, string> $headers A key-value pair array containing headers to be sent with the request for download.
+     *
      * @throws Exception
-     * @return RemoteZipFileManager
      */
-    public final function getRemoteFile(string $url, array $headers = null): RemoteZipFileManager
+    public function getRemoteFile(string $url, ?array $headers = null): RemoteZipFileManager
     {
         $this->filePointer = "{$this->workDir}/{$this->filePointer}";
 
@@ -98,15 +78,16 @@ final class RemoteZipFileManager
     /**
      * Extracts a specific file inside a .zip file.
      * This will lookup at any level of depth inside the zip file.
-     * 
+     *
      * @param string $fileName The name of the file for lookup and extraction
-     * 
+     *
      * @throws Exception Throws if unable to open the zip content or lookup the specified file
+     *
      * @return string The raw file contents as a text representation
      */
-    public final function extractFile(string $fileName): string
+    public function extractFile(string $fileName): string
     {
-        $zip = new ZipArchive;
+        $zip = new ZipArchive();
         $pointerStatus = $zip->open($this->filePointer);
 
         if ($pointerStatus !== true) {
@@ -114,21 +95,33 @@ final class RemoteZipFileManager
         }
 
         /** Attemps to find the file inside the .zip */
-        $lookupIndex = $zip->locateName($fileName, ZIPARCHIVE::FL_NODIR);
+        $lookupIndex = $zip->locateName($fileName, ZipArchive::FL_NODIR);
         if ($lookupIndex === false) {
             $zip->close();
-            throw new Exception("File name `$fileName` not found inside .zip file");
+            throw new Exception("File name `${fileName}` not found inside .zip file");
         }
 
         /** Attempts to extract and fetch the file contents */
         $fileContents = $zip->getFromIndex($lookupIndex);
         if ($fileContents === false) {
             $zip->close();
-            throw new Exception("Unable to parse contents of file `$fileName`");
+            throw new Exception("Unable to parse contents of file `${fileName}`");
         }
 
         $zip->close();
 
         return $fileContents;
+    }
+
+    /**
+     * Create a directory if it doesn't exist.
+     *
+     * @param string $dirPath The absolute path to the directory.
+     */
+    private function createDir(string $dirPath): void
+    {
+        if (is_dir($dirPath) === false) {
+            mkdir($dirPath, 0777);
+        }
     }
 }

@@ -10,6 +10,7 @@
         <directory name="." />
         <ignoreFiles>
             <directory name="vendor" />
+            <file name="phpinsights.php" />
         </ignoreFiles>
     </projectFiles>
 </psalm>

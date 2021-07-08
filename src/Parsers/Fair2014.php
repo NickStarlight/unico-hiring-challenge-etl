@@ -16,7 +16,7 @@ use UnicoETL\Helpers\PG;
  * Class Fair2014
  * Implements the logic for parsing and inserting on the
  * database the data from the `DEINFO_AB_FEIRASLIVRES_2014.csv` file.
- * 
+ *
  * @package UnicoETL
  * @author Nick Moraes <contato@nickgomes.dev>
  * @version 1.0
@@ -28,25 +28,22 @@ final class Fair2014 implements Parser
     /**
      * A pointer containing an iterator for
      * the parsed CSV records.
-     * 
-     * @var Iterator
      */
-    protected Iterator $csvRecords;
+    private Iterator $csvRecords;
 
-    /** 
+    /**
      * A pointer for a PDO instance.
-     * 
-     * @var PDO
      */
-    protected PDO $db;
+    private PDO $db;
 
     /**
      * Initializes the Parser.
-     * 
-     * @param mixed $content The .csv raw text contents
+     *
+     * @param string $content The .csv raw text contents
+     *
      * @return void
      */
-    public function __construct(mixed $content)
+    public function __construct(string $content)
     {
         $this->parse(content: $content);
         $this->db = (new PG())->getDB();
@@ -54,11 +51,10 @@ final class Fair2014 implements Parser
 
     /**
      * Parse the .csv content from provided file content.
-     * 
-     * @param mixed $content The .csv raw text content
-     * @return void
+     *
+     * @param string $content The .csv raw text content
      */
-    public final function parse(mixed $content): void
+    public function parse(string $content): void
     {
         $csvParser = Reader::createFromString(content: $content);
         $csvParser->setHeaderOffset(offset: 0);
@@ -69,10 +65,8 @@ final class Fair2014 implements Parser
 
     /**
      * Insert the parsed content into the database.
-     * 
-     * @return void
      */
-    public final function output(): void
+    public function output(): void
     {
         $fairList = iterator_to_array(iterator: $this->csvRecords, preserve_keys: true);
         $censusAreas = $this->extractUniqueKeys(array: $fairList, key: 'AREAP');
@@ -93,26 +87,26 @@ final class Fair2014 implements Parser
         } catch (PDOException $e) {
             $this->db->rollBack();
 
-            Logger::Error($e);
+            Logger::error($e);
             throw new Exception('Failed to insert records in the database, check the log file for more details.');
         }
     }
 
-    /** 
+    /**
      * Extract a list of unique values from an array containing arrays of key-value pairs.
      * Used for removing duplicates from a multi-dimensional array.
-     * 
-     * @param array $array The lookup array
+     *
+     * @param array<array<string, string>> $array The lookup array
      * @param string $key The key to extract unique rows
-     * @param array $keysToReturn Which keys should be returned for each row
-     * 
-     * @return array
+     * @param array<string> $keysToReturn Which keys should be returned for each row
+     *
+     * @return array<array<string, string>>
      */
-    protected final function extractUniqueKeys($array, $key, $keysToReturn = []): array
+    private function extractUniqueKeys(array $array, string $key, array $keysToReturn = []): array
     {
         /** Make sure the 'comparison key' is also one of the returned ones */
         array_push($keysToReturn, $key);
-        $selectedKeys = array_map(function ($e) use ($keysToReturn) {
+        $selectedKeys = array_map(static function ($e) use ($keysToReturn) {
             return array_intersect_key($e, array_flip($keysToReturn));
         }, $array);
 
@@ -125,13 +119,11 @@ final class Fair2014 implements Parser
 
     /**
      * Returns a trimmed version of a string or null if empty.
-     * 
+     *
      * @param string $string The string to be trimmed
      * @param int $length The maximum length to from the string
-     * 
-     * @return string|null
      */
-    protected final static function safeString(string|null $string, int $length): string|null
+    private static function safeString(string | null $string, int $length): string | null
     {
         if ($string === '' || $string === null) {
             return null;
@@ -142,12 +134,10 @@ final class Fair2014 implements Parser
 
     /**
      * Insert a list of Census Areas in the database.
-     * 
-     * @param array $values A list containing a key-value pair array for each area.
-     * 
-     * @return void
+     *
+     * @param array<array<string, string>> $values A list containing a key-value pair array for each area.
      */
-    protected final function insertCensusAreasInDB(array $values): void
+    private function insertCensusAreasInDB(array $values): void
     {
         $query = <<<SQL
             INSERT INTO census_areas (code, created_at, updated_at) VALUES (:code, NOW(), NOW())
@@ -162,12 +152,10 @@ final class Fair2014 implements Parser
 
     /**
      * Insert a list of Census Secots in the database.
-     * 
-     * @param array $values A list containing a key-value pair array for each sector.
-     * 
-     * @return void
+     *
+     * @param array<array<string, string>> $values A list containing a key-value pair array for each sector.
      */
-    protected final function insertCensusSectorsInDB(array $values): void
+    private function insertCensusSectorsInDB(array $values): void
     {
         $query = <<<SQL
             INSERT INTO census_sectors (code, census_area_id, created_at, updated_at) 
@@ -184,12 +172,10 @@ final class Fair2014 implements Parser
 
     /**
      * Insert a list of Boroughs in the database.
-     * 
-     * @param array $values A list containing a key-value pair array for each borough.
-     * 
-     * @return void
+     *
+     * @param array<array<string, string>> $values A list containing a key-value pair array for each borough.
      */
-    protected final function insertBoroughsInDB(array $values): void
+    private function insertBoroughsInDB(array $values): void
     {
         $query = <<<SQL
             INSERT INTO boroughs (name, smdu_code, octave_region_name, quinary_region_name, created_at, updated_at) 
@@ -208,12 +194,10 @@ final class Fair2014 implements Parser
 
     /**
      * Insert a list of Districts in the database.
-     * 
-     * @param array $values A list containing a key-value pair array for each district.
-     * 
-     * @return void
+     *
+     * @param array<array<string, string>> $values A list containing a key-value pair array for each district.
      */
-    protected final function insertDistrictsInDB(array $values): void
+    private function insertDistrictsInDB(array $values): void
     {
         $query = <<<SQL
             INSERT INTO districts (name, ibge_code, borough_id, created_at, updated_at) 
@@ -231,12 +215,10 @@ final class Fair2014 implements Parser
 
     /**
      * Insert a list of Fairs and their addresses in the database.
-     * 
-     * @param array $values A list containing a key-value pair array for each fair.
-     * 
-     * @return void
+     *
+     * @param array<array<string, string>> $values A list containing a key-value pair array for each fair.
      */
-    protected final function insertFairsInDB(array $values): void
+    private function insertFairsInDB(array $values): void
     {
         $query = <<<SQL
         WITH address_id_inserted AS (

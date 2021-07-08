@@ -9,7 +9,7 @@ use ReflectionClass;
 /**
  * Enum class
  * Helper class for creating and emulating an enumerate behavior.
- * 
+ *
  * Since enums are only available on PHP 8.1, I'm still using classes for this.
  *
  * @package UnicoETL
@@ -21,12 +21,12 @@ use ReflectionClass;
 abstract class Enum
 {
     /**
-     * Return an array containing the values of all 
+     * Return an array containing the values of all
      * the defined constants on the class.
-     * 
-     * @return array
+     *
+     * @return array<string>
      */
-    public static function getConstants()
+    public static function getConstants(): array
     {
         $oClass = new ReflectionClass(static::class);
         return array_values(array: $oClass->getConstants());

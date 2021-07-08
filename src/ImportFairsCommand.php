@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnicoETL;
 
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,16 +12,15 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use UnicoETL\Enums\SupportedFiles;
 use UnicoETL\Helpers\RemoteZipFileManager;
-use Exception;
 use UnicoETL\Parsers\Fair2014;
 
 /**
  * Class ImportFairsCommand
  * Implements all the logic for importing Sao Paulo's Open Fairs
  * data inside a relational database.
- * 
+ *
  * Currently supported files: `DEINFO_AB_FEIRASLIVRES_2014.csv`
- * 
+ *
  * @package UnicoETL
  * @author Nick Moraes <contato@nickgomes.dev>
  * @version 1.0
@@ -30,27 +30,24 @@ use UnicoETL\Parsers\Fair2014;
 final class ImportFairsCommand extends Command
 {
     /**
-     * Defines the command name to be used as CLI parameter.
-     * 
-     * @var string|null
-     */
-    protected static $defaultName = 'import-fairs';
-
-    /**
      * Defines the source URL containing a .zip format
      * file that has all the available Open Fairs files.
-     * 
-     * @var string
      */
     private const REMOTE_SOURCE_URL = 'http://www.prefeitura.sp.gov.br/cidade/secretarias/upload/chamadas/feiras_livres_1429113213.zip';
 
     /**
+     * Defines the command name to be used as CLI parameter.
+     */
+    protected static $defaultName = 'import-fairs';
+
+    /**
      * Scaffold the ETL process.
-     * 
+     *
      * @param InputInterface $input The Symfony CLI input interface
      * @param OutputInterface $output The Symfony CLI output interface
-     * 
+     *
      * @throws Exception
+     *
      * @return int UNIX status code
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -68,7 +65,8 @@ final class ImportFairsCommand extends Command
         /** Attempts to download the remote source .zip and find the user queried file */
         $manager = new RemoteZipFileManager();
         $io->writeln('[File Manager] Remote file downloading...');
-        $fileContents = $manager->getRemoteFile(url: self::REMOTE_SOURCE_URL)->extractFile(fileName: $fileName);
+        $fileContents = $manager->getRemoteFile(url: self::REMOTE_SOURCE_URL)
+            ->extractFile(fileName: $fileName);
         $io->writeln('[File Manager] Remote file downloaded!');
 
         /** Switch to determine which parser should be used to evaluate the file */
@@ -93,10 +91,10 @@ final class ImportFairsCommand extends Command
 
     /**
      * Query the user to select a file for performing ETL on.
-     * 
+     *
      * @param InputInterface $input The Symfony CLI input interface
      * @param OutputInterface $output The Symfony CLI output interface
-     * 
+     *
      * @return string The selected file name
      */
     private function askUserForFileInput(InputInterface $input, OutputInterface $output): string
@@ -106,9 +104,10 @@ final class ImportFairsCommand extends Command
             question: 'Please select a remote file to perform ETL',
             choices: SupportedFiles::getConstants()
         );
-        $fileName = $helper->ask(input: $input, output: $output, question: $question);
-
-
-        return $fileName;
+        return $helper->ask(
+            input: $input,
+            output: $output,
+            question: $question
+        );
     }
 }

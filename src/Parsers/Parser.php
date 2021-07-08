@@ -6,9 +6,9 @@ namespace UnicoETL\Parsers;
 
 /**
  * Class Parser
- * Implements the abstract foundation for all parsers that 
+ * Implements the abstract foundation for all parsers that
  * may be created.
- * 
+ *
  * @package UnicoETL
  * @author Nick Moraes <contato@nickgomes.dev>
  * @version 1.0
@@ -18,7 +18,7 @@ namespace UnicoETL\Parsers;
 interface Parser
 {
     /** Function for parsing and evaluating a content */
-    public function parse(mixed $content): void;
+    public function parse(string $content): void;
 
     /** Function for outputting or transfering the parser content */
     public function output(): void;

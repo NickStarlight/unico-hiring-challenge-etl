@@ -32,7 +32,7 @@ docker build -t unico/fair-etl .
 
 3. Run the script:
 ```bash
-docker run -it -v $(pwd):/usr/src/etl --rm --name unicoetl unico/fair-etl
+docker run -it -v $(pwd):/usr/src/etl --name unicoetl unico/fair-etl
 ``` 
 You'll only be prompted one question regarding which file you wan't import into the database, the script will download and parse the file automatically.
 
@@ -40,7 +40,14 @@ You'll only be prompted one question regarding which file you wan't import into 
     The --rm parameter is a mere convenience, this deletes the container after the execution.
 
 ## Logging
-Errors are automatically logged to `log.txt`
+Errors are automatically logged to `log.txt`, however, the log files are inside the Docker container.
+For exporting the logs, run:
+
+```bash
+docker cp unicoetl:"usr/src/etl/log.txt" "log.txt"
+```
+This will export a new `log.txt` file inside the current directory.
+    Note: You'll need to remove the `--rm` parameter from the CLI call, otherwise, the container is destroyed after execution and the logs will be lost.
 
 ## Database structure
 ![UML](https://i.imgur.com/ybOpylH.png)

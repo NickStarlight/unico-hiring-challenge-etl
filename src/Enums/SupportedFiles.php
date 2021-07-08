@@ -7,7 +7,7 @@ namespace UnicoETL\Enums;
 /**
  * Enum SupportedFiles
  * Describes the available files for the ETL process.
- * 
+ *
  * Since enums are only available on PHP 8.1, I'm still using classes for this.
  *
  * @package UnicoETL

@@ -20,31 +20,32 @@ final class Logger
 {
     /**
      * The file name to output any application logs.
-     * 
-     * @var string
      */
-    protected const FILENAME = 'log.txt';
+    private const FILENAME = 'log.txt';
 
-    /** 
+    /**
      * Outputs a message to the log file.
-     * 
-     * @return void
      */
-    public static final function Error(Exception $exception): void
+    public static function error(Exception $exception): void
     {
-        $dateTime = date(format: "Y-m-d H:i:s");;
+        $dateTime = date(format: 'Y-m-d H:i:s');
+
         $message = $exception->getMessage();
         $stack = $exception->getTraceAsString();
 
         $errorText = <<<EOD
         ================== EXCEPTION ==================
-        DATETIME: $dateTime
-        MESSAGE: $message
+        DATETIME: ${dateTime}
+        MESSAGE: ${message}
         STACKTRACE:
-        $stack
+        ${stack}
         \n\n\n
         EOD;
 
-        file_put_contents(filename: self::FILENAME, data: $errorText, flags: FILE_APPEND | LOCK_EX);
+        file_put_contents(
+            filename: self::FILENAME,
+            data: $errorText,
+            flags: FILE_APPEND | LOCK_EX
+        );
     }
 }
