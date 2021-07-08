@@ -1,6 +1,7 @@
 # Unico Hiring Challenge - ETL module
 ![PHP Version](https://img.shields.io/badge/PHP%20Version-8.0-informational)
 ![Coding Style](https://img.shields.io/badge/Coding%20Style-PSR--12-yellow)
+[![Code Quality](https://img.shields.io/badge/Code%20Quality-A%2B-green)](https://github.com/NickStarlight/unico-hiring-challenge-etl/actions/workflows/Quality.yaml)
 ![Psalm Static Analysis](https://github.com/NickStarlight/unico-hiring-challenge-etl/actions/workflows/Psalm.yaml/badge.svg)
 ![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)
 
