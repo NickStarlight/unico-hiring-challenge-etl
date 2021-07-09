@@ -33,7 +33,7 @@ docker build -t unico/fair-etl .
 
 3. Run the script:
 ```bash
-docker run -it -v $(pwd):/usr/src/etl --name unicoetl unico/fair-etl
+docker run -it --rm -v $(pwd):/usr/src/etl --name unicoetl unico/fair-etl
 ``` 
 You'll only be prompted one question regarding which file you wan't import into the database, the script will download and parse the file automatically.
 
