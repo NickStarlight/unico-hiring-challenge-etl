@@ -228,7 +228,8 @@ final class Fair2014 implements Parser
                 street,
                 neighborhood,
                 reference_point,
-                coordinates,
+                longitude,
+                latitude,
                 district_id,
                 census_area_id,
                 updated_at,
@@ -240,7 +241,8 @@ final class Fair2014 implements Parser
                 :street,
                 :neighborhood,
                 :reference_point,
-                (ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)),
+                :longitude,
+                :latitude,
                 (
                     SELECT id
                     FROM   districts
